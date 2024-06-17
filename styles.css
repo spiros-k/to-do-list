@@ -1,21 +1,71 @@
-body{
+body, button{
     font-family: "Montserrat", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
+
+    box-sizing: border-box;
 }
 
 h1{
     text-align: center;
 }
 
-.flex{
+section{
     display: flex;
-    flex-flow: column;
+    flex-flow: column wrap;
     align-items: center;
+    gap: 15px;
 }
 
 .flex-gap{
     display: flex;
-    gap: 15px;
+    gap: 10px;
+}
+
+input{
+    background-color: transparent;
+    border: solid 2px grey;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+button{
+    background-color: blue;
+    border: solid 1px blue;
+    border-radius: 5px;
+    color: #fafafa;
+    padding: 5px 7.5px;
+}
+
+button:hover{
+    cursor: pointer;
+    font-weight: bold;
+}
+
+ul{
+    display: flex;
+    flex-flow: column;
+    padding: 0;
+    width: 25%;
+}
+
+ul > input{
+    width: 20px;
+}
+
+li{
+    background-color: skyblue;
+    border-radius: 5px;
+    list-style: none;
+    margin-top: 5px;
+    padding: 5% 8%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.linethrough{
+    text-decoration: line-through;
 }
