@@ -4,7 +4,7 @@ class Model {
         // things already have in my list
         this.toDoItems = [
             {id: 1, text: "Wash the dishes", completed: false},
-            {id: 2, text: "Wash the dog", completed: false},
+            {id: 2, text: "Walk the dog", completed: false},
         ]
     }
 
@@ -63,12 +63,11 @@ class Model {
 class View {
     constructor() {
         const titleHeader = document.createElement("h1")
-        let headerContent = document.createTextNode("Things To-Do")
+        const headerContent = document.createTextNode("Things To-Do")
         
         titleHeader.appendChild(headerContent)
 
-        this.div = document.createElement("div")
-        this.form = document.createElement("div")
+        this.form = document.createElement("form")
 
         this.input = document.createElement("input")
         this.input.type = "text"
@@ -76,17 +75,64 @@ class View {
         this.input.name = "todo-item"
 
         this.submit = document.createElement("button")
+        this.submit.textContent = "Submit"
 
-        const submitText = document.createTextNode("Submit")
-        this.submit.appendChild(submitText)
+        this.todoList = document.createElement("ul", "todo-list")
 
         this.form.classList.add("flex-gap")
         this.form.append(this.input, this.submit)
-        this.div.classList.add("flex")
-        this.div.append(titleHeader, this.form)
 
         const currentRoot = document.getElementById("root")
-        currentRoot.appendChild(this.div)
+        currentRoot.append(titleHeader, this.form, this.todoList)
+    }
+
+    get todoText() {
+        return this.input.value
+    }
+
+    resetInput() {
+        this.input.value = ""
+    }
+
+    displayToDoItems() {
+        if(this.todoList.firstChild) {
+            this.todoList.removeChild(this.todoList.firstChild)
+        }
+
+        if(this.todoList.length == 0) {
+            const emptyElement = document.createElement("p")
+            const emptyMessage = document.createTextNode("No things to do. Add some items?")
+            emptyElement.appendChild(emptyMessage)
+            this.todoList.appendChild(emptyElement)
+        } else {
+            app.model.toDoItems.map((item) => {
+                const listItem = document.createElement("li")
+
+                const checkBox = document.createElement("input")
+                checkBox.type = "checkbox"
+                checkBox.checked = item.completed
+
+                const span = document.createElement("span")
+                span.contentEditable = true
+                if(item.completed) {
+                    const strike = document.createElement("s")
+                    strike.textContent = item.text
+                    span.appendChild(strike)
+                } else {
+                    span.textContent = item.text
+                    console.log("YEAS")
+                }
+
+                const deleteButton = document.createElement("button")
+                deleteButton.type = "button"
+                deleteButton.textContent = "Delete"
+
+                listItem.append(checkBox, span, deleteButton)
+
+                this.todoList.appendChild(listItem)
+            })
+        }
+
     }
 }
 
@@ -100,3 +146,4 @@ class Controller {
 const app = new Controller(new Model(), new View())
 app.model.addToDoItems("Read one chapter")
 console.log(app)
+app.view.displayToDoItems()
