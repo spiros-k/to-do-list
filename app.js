@@ -9,7 +9,6 @@ class Model {
     }
 
     addToDoItems(todoText) {
-        
         if(this.toDoItems != []){
             const item = {
                 id: this.toDoItems[this.toDoItems.length - 1].id + 1, 
@@ -120,7 +119,6 @@ class View {
                     span.appendChild(strike)
                 } else {
                     span.textContent = item.text
-                    console.log("YEAS")
                 }
 
                 const deleteButton = document.createElement("button")
@@ -132,7 +130,6 @@ class View {
                 this.todoList.appendChild(listItem)
             })
         }
-
     }
 }
 
@@ -140,6 +137,22 @@ class Controller {
     constructor(model, view) {
         this.model = model;
         this.view = view;
+
+        if(model.toDoItems != []) {
+            view.displayToDoItems
+        }
+    }
+
+    checkToDoItems(text) {
+        app.model.toDoItems.map((item) => {
+            if(item.text != text) {
+                app.view.displayToDoItems
+            }
+        })
+    }
+
+    handleAddToDoItems = (toDoText) => {
+        this.model.addToDoItems(toDoText)
     }
 }
 
@@ -147,3 +160,4 @@ const app = new Controller(new Model(), new View())
 app.model.addToDoItems("Read one chapter")
 console.log(app)
 app.view.displayToDoItems()
+app.checkToDoItems()
