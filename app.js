@@ -6,6 +6,11 @@ class Model {
             {id: 1, text: "Wash the dishes", completed: false},
             {id: 2, text: "Walk the dog", completed: false},
         ]
+
+    }
+
+    toDoListChanged(change) {
+        this.checkToDoList = change
     }
 
     addToDoItems(todoText) {
@@ -24,6 +29,7 @@ class Model {
             }
             this.toDoItems.push(item)
         }
+        this.checkToDoList(this.toDoItems)
     }
 
     editToDoItems(id, textNew) {
@@ -37,12 +43,14 @@ class Model {
                 this.toDoItems.push(item)
             }
         })
+        this.checkToDoList(this.toDoItems)
     }
 
     deleteToDoItems(id) {
         this.toDoItems.filter((item) => {
             item.id !== id
         })
+        this.checkToDoList(this.toDoItems)
     }
 
     toggleToDoItems(id) {
@@ -56,6 +64,7 @@ class Model {
                 this.toDoItems.push(item)
             }
         })
+        this.checkToDoList(this.toDoItems)
     }
 }
 
@@ -85,7 +94,7 @@ class View {
         currentRoot.append(titleHeader, this.form, this.todoList)
     }
 
-    get todoText() {
+    todoText() {
         return this.input.value
     }
 
@@ -93,43 +102,73 @@ class View {
         this.input.value = ""
     }
 
-    displayToDoItems() {
-        if(this.todoList.firstChild) {
+    displayToDoItems(toDos) {
+        while(this.todoList.firstChild) {
             this.todoList.removeChild(this.todoList.firstChild)
         }
-
+        console.log(this.todoList)
         if(this.todoList.length == 0) {
             const emptyElement = document.createElement("p")
             const emptyMessage = document.createTextNode("No things to do. Add some items?")
             emptyElement.appendChild(emptyMessage)
             this.todoList.appendChild(emptyElement)
         } else {
-            app.model.toDoItems.map((item) => {
+            toDos.map((item) => {
                 const listItem = document.createElement("li")
 
                 const checkBox = document.createElement("input")
                 checkBox.type = "checkbox"
                 checkBox.checked = item.completed
+                checkBox.id = "checkbox"
 
                 const span = document.createElement("span")
                 span.contentEditable = true
-                if(item.completed) {
+                while(document.getElementById("checkbox") === "checked") {
+                    span.classList.add("linethrough")
+                    console.log("FFppp")
                     const strike = document.createElement("s")
                     strike.textContent = item.text
                     span.appendChild(strike)
-                } else {
-                    span.textContent = item.text
                 }
-
+                span.textContent = item.text
+                
                 const deleteButton = document.createElement("button")
                 deleteButton.type = "button"
                 deleteButton.textContent = "Delete"
+                deleteButton.name = "Delete"
 
                 listItem.append(checkBox, span, deleteButton)
 
                 this.todoList.appendChild(listItem)
             })
         }
+    }
+
+    addListeners() {
+        this.form.addEventListener("submit", e => {
+            e.preventDefault()
+
+            if(this.todoText){
+                this.todoText
+            }
+            this.resetInput()
+        })
+    }
+
+    deleteListeners() {
+        this.todoList.addEventListener("click", (e) => {
+            if(e.target.name === "Delete"){
+                this.todoList.removeChild(this.todoList.firstChild)
+            }
+        })
+    }
+
+    changeListeners() {
+        this.todoList.addEventListener("change", (e) => {
+            if(e.target.checkBox === checked) {
+                this.toDoItems.completed = true 
+            }
+        })
     }
 }
 
@@ -138,26 +177,48 @@ class Controller {
         this.model = model;
         this.view = view;
 
-        if(model.toDoItems != []) {
-            view.displayToDoItems
-        }
+        // if(model.toDoItems != []) {
+        //     view.displayToDoItems
+        // }
+        this.checkToDoList(this.model.toDoItems)
+
+        this.view.addListeners(this.handleAddToDoItems)
+        this.view.deleteListeners(this.handleDeleteToDoItems)
+        
+        this.model.toDoListChanged(this.checkToDoList)
     }
 
-    checkToDoItems(text) {
-        app.model.toDoItems.map((item) => {
-            if(item.text != text) {
-                app.view.displayToDoItems
-            }
-        })
+    checkToDoList = (text) => {
+        // app.model.toDoItems.map((item) => {
+        //     if(item.text != text) {
+        //         app.view.displayToDoItems
+        //     }
+        // })
+        this.view.displayToDoItems(text)
     }
 
     handleAddToDoItems = (toDoText) => {
         this.model.addToDoItems(toDoText)
     }
+
+    handleEditToDoItems = (id, textNew) => {
+        this.model.editToDoItems(id, textNew)
+    }
+
+    handleDeleteToDoItems = (id) => {
+        this.model.deleteToDoItems(id)
+    }
+
+    handleToggleToDoItems = (id) => {
+        this.model.toggleToDoItems(id)
+    }
+
 }
 
 const app = new Controller(new Model(), new View())
-app.model.addToDoItems("Read one chapter")
-console.log(app)
-app.view.displayToDoItems()
-app.checkToDoItems()
+//app.model.addToDoItems("Read one chapter")
+//console.log(app)
+// app.view.displayToDoItems()
+// app.view.checkToDoItems()
+// app.view.addListeners()
+// console.log(app.view.addListeners)
