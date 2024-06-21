@@ -70,6 +70,7 @@ class Model {
 
 class View {
     constructor() {
+
         const titleHeader = document.createElement("h1")
         const headerContent = document.createTextNode("Things To-Do")
         
@@ -94,6 +95,14 @@ class View {
         currentRoot.append(titleHeader, this.form, this.todoList)
     }
 
+    createElement(tag, className) {
+        const element = document.createElement(tag)
+        if(className) {
+            element.classList.add(className)
+        }
+        return element;    
+    }
+
     todoText() {
         return this.input.value
     }
@@ -108,29 +117,25 @@ class View {
         }
         console.log(this.todoList)
         if(this.todoList.length == 0) {
-            const emptyElement = document.createElement("p")
+            const emptyElement = this.createElement("p")
             const emptyMessage = document.createTextNode("No things to do. Add some items?")
             emptyElement.appendChild(emptyMessage)
             this.todoList.appendChild(emptyElement)
         } else {
-            toDos.map((item) => {
-                const listItem = document.createElement("li")
+            toDos.forEach((item) => {
+                const listItem = this.createElement("li")
 
-                const checkBox = document.createElement("input")
+                const checkBox = this.createElement("input")
                 checkBox.type = "checkbox"
                 checkBox.checked = item.completed
-                checkBox.id = "checkbox"
 
-                const span = document.createElement("span")
-                span.contentEditable = true
-                while(document.getElementById("checkbox") === "checked") {
-                    span.classList.add("linethrough")
-                    console.log("FFppp")
-                    const strike = document.createElement("s")
-                    strike.textContent = item.text
-                    span.appendChild(strike)
-                }
+                const span = this.createElement("span")
                 span.textContent = item.text
+                // const span = this.createElement()
+                // span.contentEditable = true
+                // const strike = document.createElement("s")
+                // strike.textContent = item.text
+                // span.appendChild(strike)
                 
                 const deleteButton = document.createElement("button")
                 deleteButton.type = "button"
@@ -165,8 +170,10 @@ class View {
 
     changeListeners() {
         this.todoList.addEventListener("change", (e) => {
-            if(e.target.checkBox === checked) {
-                this.toDoItems.completed = true 
+            if(e.target.type === "checkbox") {
+                e.target.parentElement.classList.toggle("linethrough")
+                console.log(e.target)
+            // should not line through the button text, when checkbox is checked
             }
         })
     }
@@ -184,16 +191,13 @@ class Controller {
 
         this.view.addListeners(this.handleAddToDoItems)
         this.view.deleteListeners(this.handleDeleteToDoItems)
+        this.view.changeListeners(this.handleToggleToDoItems)
         
         this.model.toDoListChanged(this.checkToDoList)
     }
 
     checkToDoList = (text) => {
-        // app.model.toDoItems.map((item) => {
-        //     if(item.text != text) {
-        //         app.view.displayToDoItems
-        //     }
-        // })
+        
         this.view.displayToDoItems(text)
     }
 
