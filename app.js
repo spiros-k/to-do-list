@@ -3,8 +3,7 @@ class Model {
     constructor() {
         // things already have in my list
         this.toDoItems = [
-            {id: 1, text: "Wash the dishes", completed: false},
-            {id: 2, text: "Walk the dog", completed: false},
+            
         ]
 
     }
@@ -111,18 +110,19 @@ class View {
         this.input.value = ""
     }
 
-    displayToDoItems(toDos) {
+    displayToDoItems(toDoItems) {
         while(this.todoList.firstChild) {
             this.todoList.removeChild(this.todoList.firstChild)
         }
-        console.log(this.todoList)
+        
         if(this.todoList.length == 0) {
             const emptyElement = this.createElement("p")
             const emptyMessage = document.createTextNode("No things to do. Add some items?")
             emptyElement.appendChild(emptyMessage)
             this.todoList.appendChild(emptyElement)
         } else {
-            toDos.forEach((item) => {
+            console.log(toDoItems)
+            toDoItems.forEach((item) => {
                 const listItem = this.createElement("li")
 
                 const checkBox = this.createElement("input")
@@ -131,18 +131,16 @@ class View {
 
                 const span = this.createElement("span")
                 span.textContent = item.text
-                // const span = this.createElement()
-                // span.contentEditable = true
-                // const strike = document.createElement("s")
-                // strike.textContent = item.text
-                // span.appendChild(strike)
                 
                 const deleteButton = document.createElement("button")
                 deleteButton.type = "button"
                 deleteButton.textContent = "Delete"
                 deleteButton.name = "Delete"
 
-                listItem.append(checkBox, span, deleteButton)
+                const divItem = this.createElement("div")
+                divItem.append(checkBox, span)
+
+                listItem.append(divItem, deleteButton)
 
                 this.todoList.appendChild(listItem)
             })
@@ -150,11 +148,30 @@ class View {
     }
 
     addListeners() {
-        this.form.addEventListener("submit", e => {
+        this.form.addEventListener("submit", (e) => {
             e.preventDefault()
 
-            if(this.todoText){
-                this.todoText
+            if(this.input.value != ""){
+                let liElem = this.createElement("li")
+                
+                let checkElem = this.createElement("input")
+                checkElem.type = "checkbox"
+
+                let spanElem = this.createElement("span")
+                spanElem.textContent = this.input.value
+
+                let deleteElem = this.createElement("button")
+                deleteElem.textContent = "Delete"
+                deleteElem.name = "Delete"
+                deleteElem.type = "button"
+
+                const divElem = this.createElement("div")
+                divElem.append(checkElem, spanElem)
+
+                liElem.append(divElem, deleteElem)
+
+                this.todoList.appendChild(liElem)
+                
             }
             this.resetInput()
         })
@@ -162,8 +179,9 @@ class View {
 
     deleteListeners() {
         this.todoList.addEventListener("click", (e) => {
+            
             if(e.target.name === "Delete"){
-                this.todoList.removeChild(this.todoList.firstChild)
+                this.todoList.removeChild()
             }
         })
     }
@@ -173,7 +191,6 @@ class View {
             if(e.target.type === "checkbox") {
                 e.target.parentElement.classList.toggle("linethrough")
                 console.log(e.target)
-            // should not line through the button text, when checkbox is checked
             }
         })
     }
