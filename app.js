@@ -2,10 +2,7 @@
 class Model {
     constructor() {
         // things already have in my list
-        this.toDoItems = [
-            
-        ]
-
+        this.toDoItems = [ ]
     }
 
     toDoListChanged(change) {
@@ -69,7 +66,6 @@ class Model {
 
 class View {
     constructor() {
-
         const titleHeader = document.createElement("h1")
         const headerContent = document.createTextNode("Things To-Do")
         
@@ -115,13 +111,12 @@ class View {
             this.todoList.removeChild(this.todoList.firstChild)
         }
         
-        if(this.todoList.length == 0) {
+        if(toDoItems.length === 0) {
             const emptyElement = this.createElement("p")
             const emptyMessage = document.createTextNode("No things to do. Add some items?")
             emptyElement.appendChild(emptyMessage)
             this.todoList.appendChild(emptyElement)
         } else {
-            console.log(toDoItems)
             toDoItems.forEach((item) => {
                 const listItem = this.createElement("li")
 
@@ -171,17 +166,18 @@ class View {
                 liElem.append(divElem, deleteElem)
 
                 this.todoList.appendChild(liElem)
-                
             }
             this.resetInput()
+            const pElem = document.querySelector("p")
+            pElem.classList.add("hidden")
+
         })
     }
 
     deleteListeners() {
         this.todoList.addEventListener("click", (e) => {
-            
             if(e.target.name === "Delete"){
-                this.todoList.removeChild()
+                this.todoList.removeChild(e.target.parentElement)
             }
         })
     }
@@ -190,7 +186,6 @@ class View {
         this.todoList.addEventListener("change", (e) => {
             if(e.target.type === "checkbox") {
                 e.target.parentElement.classList.toggle("linethrough")
-                console.log(e.target)
             }
         })
     }
@@ -201,9 +196,6 @@ class Controller {
         this.model = model;
         this.view = view;
 
-        // if(model.toDoItems != []) {
-        //     view.displayToDoItems
-        // }
         this.checkToDoList(this.model.toDoItems)
 
         this.view.addListeners(this.handleAddToDoItems)
@@ -214,7 +206,6 @@ class Controller {
     }
 
     checkToDoList = (text) => {
-        
         this.view.displayToDoItems(text)
     }
 
@@ -237,9 +228,3 @@ class Controller {
 }
 
 const app = new Controller(new Model(), new View())
-//app.model.addToDoItems("Read one chapter")
-//console.log(app)
-// app.view.displayToDoItems()
-// app.view.checkToDoItems()
-// app.view.addListeners()
-// console.log(app.view.addListeners)

@@ -7,7 +7,7 @@ body, button{
     box-sizing: border-box;
 }
 
-h1{
+h1, p{
     text-align: center;
 }
 
@@ -68,4 +68,8 @@ li{
 
 .linethrough{
     text-decoration: line-through;
+}
+
+.hidden{
+    display: none;
 }
